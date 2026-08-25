@@ -231,6 +231,7 @@ namespace YTSubConverter.Shared.Formats
             Line windowStyle = GetItemAtIndexSafe(windowStyles, elem.GetIntAttribute("ws"));
             if (windowStyle != null)
             {
+                line.Justification = windowStyle.Justification;
                 line.HorizontalTextDirection = windowStyle.HorizontalTextDirection;
                 line.VerticalTextType = windowStyle.VerticalTextType;
             }
