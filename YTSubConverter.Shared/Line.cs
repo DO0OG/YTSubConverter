@@ -51,6 +51,17 @@ namespace YTSubConverter.Shared
             get { return string.Join("", Sections.Select(s => s.Text)); }
         }
 
+        /// <summary>
+        /// Explicit YTT &lt;ws ju&gt; value (0 = left, 1 = right, 2 = center).
+        /// When null the value is derived from <see cref="AnchorPoint"/>, preserving the original behavior.
+        /// Lets callers express an anchor point and a box justification independently.
+        /// </summary>
+        public int? Justification
+        {
+            get;
+            set;
+        }
+
         public AnchorPoint AnchorPoint
         {
             get;
@@ -96,6 +107,7 @@ namespace YTSubConverter.Shared
             Start = line.Start;
             End = line.End;
             AnchorPoint = line.AnchorPoint;
+            Justification = line.Justification;
             Position = line.Position;
             HorizontalTextDirection = line.HorizontalTextDirection;
             VerticalTextType = line.VerticalTextType;

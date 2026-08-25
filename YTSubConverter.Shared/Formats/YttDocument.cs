@@ -158,6 +158,8 @@ namespace YTSubConverter.Shared.Formats
             int id = elem.GetIntAttribute("id") ?? 0;
             Line windowStyle = new(TimeBase, TimeBase);
 
+            windowStyle.Justification = elem.GetIntAttribute("ju");
+
             int printDirection = elem.GetIntAttribute("pd") ?? 0;
             int scrollDirection = elem.GetIntAttribute("sd") ?? 0;
             (windowStyle.HorizontalTextDirection, windowStyle.VerticalTextType) = GetTextDirections(printDirection, scrollDirection);
@@ -711,7 +713,7 @@ namespace YTSubConverter.Shared.Formats
         {
             writer.WriteStartElement("ws");
             writer.WriteAttributeString("id", styleId.ToString());
-            writer.WriteAttributeString("ju", GetJustificationId(style.AnchorPoint).ToString());
+            writer.WriteAttributeString("ju", GetEffectiveJustificationId(style).ToString());
             (int pd, int sd) = GetPrintAndScrollDirectionIds(style.HorizontalTextDirection, style.VerticalTextType);
             writer.WriteAttributeString("pd", pd.ToString());
             writer.WriteAttributeString("sd", sd.ToString());
@@ -961,6 +963,11 @@ namespace YTSubConverter.Shared.Formats
                    };
         }
 
+        private static int GetEffectiveJustificationId(Line line)
+        {
+            return line.Justification ?? GetJustificationId(line.AnchorPoint);
+        }
+
         private static int GetJustificationId(AnchorPoint anchorPoint)
         {
             switch (anchorPoint)
@@ -1161,14 +1168,14 @@ namespace YTSubConverter.Shared.Formats
         {
             public bool Equals(Line x, Line y)
             {
-                return GetJustificationId(x.AnchorPoint) == GetJustificationId(y.AnchorPoint) &&
+                return GetEffectiveJustificationId(x) == GetEffectiveJustificationId(y) &&
                        x.HorizontalTextDirection == y.HorizontalTextDirection &&
                        x.VerticalTextType == y.VerticalTextType;
             }
 
             public int GetHashCode(Line line)
             {
-                return GetJustificationId(line.AnchorPoint) ^
+                return GetEffectiveJustificationId(line) ^
                        line.HorizontalTextDirection.GetHashCode() ^
                        line.VerticalTextType.GetHashCode();
             }
